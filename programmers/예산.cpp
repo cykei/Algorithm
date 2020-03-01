@@ -1,54 +1,37 @@
 /*
 2020.03.01
 https://programmers.co.kr/learn/courses/30/lessons/43237
-2시간  +6
 
-이분탐색 (그러나 이분탐색 안써도 풀 수 있다)
+이분탐색 안쓰고 푸는 방법 (프로그래머스 다른 사람풀이 참조)
 */
 
 
 #include <string>
 #include <vector>
-#include<algorithm>
-#include<stack>
+#include <algorithm>
+
 using namespace std;
 
 int solution(vector<int> budgets, int M) {
     int answer = 0;
-    sort(budgets.begin(), budgets.end());
-    int left = budgets.size();
-    int right = budgets[left-1];
-    int mid;
-    long long yesan;
-    stack<pair<long long,int>> s;
-    while(left<=right){
-        mid = (left + right)/2;
-        printf("left: %d, right: %d, mid : %d\n",left, right,mid);
-        yesan=0;
-        for (int i=0; i<budgets.size(); i++){
-            if(budgets[i]<=mid){
-                yesan+=budgets[i];
-            }else{
-                yesan+= (budgets.size()-i)*mid;
-                break;
-            }
-        }
-        printf("yesan: %d\n",yesan);
-        s.push(make_pair(yesan,mid));
-        if(yesan==M){
-            return mid;
-        }else if(yesan<M){
-            left=mid+1;
-        }else{
-            right=mid-1;
-        }
+    int numbers = budgets.size();
+
+    sort(budgets.begin(),budgets.end());
+    for(auto itr=budgets.begin(); itr!= budgets.end(); itr++){
         
+         printf("numbers :%d, M: %d\n", numbers,M);
+         printf("*itr:%d, M/numbers: %d\n",*itr, M/numbers );
+        if(*itr > (M / numbers)) return M/numbers; 
+        //제일 작은 예산이 최대 균등분배 금액보다 크면 그게 limit가 된다.
+        else{
+            // 제일 작은 예산이 최대 균등분배(M/numbers) 금액보다 작았다면
+            // 그 금액을 빼고 남는 여유분이 있다는 뜻임으로 이 여유분을 최대 균등분배액에 더해주기 위해
+            // 총 예산에서 가장 작은 예산을 빼고, numbers 도 줄여준다.
+            M -= *itr;
+            numbers--;
+            
+        }
     }
-    while(yesan>M){
-        s.pop();
-        yesan=s.top().first;
-    }
-    mid=s.top().second;
-    
-    return mid;
+
+    return budgets.back();
 }

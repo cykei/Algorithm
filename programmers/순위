@@ -1,0 +1,54 @@
+/*
+2020.03.07
+https://programmers.co.kr/learn/courses/30/lessons/49191
+2시간 +7
+
+플로이드 와샬 : 모든 정점에서 다른 모든 정점으로 가는 최단 경로.
+*/
+
+#include <string>
+#include <vector>
+#define INF 987654321
+using namespace std;
+
+int solution(int n, vector<vector<int>> results) {
+    int answer = 0;
+  
+    int map[101][101];
+    
+    //초기화
+    for (int i=1; i<=n; i++){
+        for (int j=1; j<=n; j++){
+            map[i][j]=INF;
+        }
+    }
+    
+    //그래프 만들기
+    for (int i=0; i<results.size(); i++){
+        map[results[i][0]][results[i][1]]=1;
+    }
+    
+    //플로이드 와샬
+    for (int k=1; k<=n; k++){
+        for (int i=1; i<=n; i++){
+            for (int j=1; j<=n; j++){
+                if (map[i][j] > map[i][k]+map[k][j])
+                    map[i][j] = map[i][k]+map[k][j];
+            }
+        }
+    }
+    
+    //경로가 있는가?
+    vector<int> trace(n+1);
+    for (int i=1; i<=n; i++){
+        for (int j=1; j<=n; j++){
+            if(i!=j && map[i][j] == INF && map[j][i] == INF) trace[j] = 1;
+        }
+    }
+    
+    for (int i=1; i<=n; i++){
+        if (trace[i]==0) answer++;
+    }
+    
+    return answer;
+}
